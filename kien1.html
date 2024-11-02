@@ -85,20 +85,14 @@
             <div id="container-speed" class="chart-container"></div>
             <div id="container-rpm" class="chart-container"></div>
             <p class="highcharts-description">
-                Chart demonstrating solid gauges with dynamic data. Two separate charts
-                are used, and each is updated dynamically every few seconds. Solid
-                gauges are popular charts for dashboards, as they visualize a number
-                in a range at a glance. As demonstrated by these charts, the color of
-                the gauge can change depending on the value of the data shown.
+                ??????? Triet ??????????
             </p>
         </figure>
-
-        <input type="checkbox" id="HeartBeat">
         <script>
-            // Era Widget initialization
-        const eraWidget = new EraWidget();
+ //           <!-- // Era Widget initialization
+ /*      const eraWidget = new EraWidget();
         let config = null;
-        let heartbeatValue = 0; // Khởi tạo giá trị nhịp tim mặc định
+        let doamValue = 0; // Khởi tạo giá trị nhịp tim mặc định
         const dataBuffer = [];
 
         eraWidget.onConfiguration((configuration) => {
@@ -106,12 +100,12 @@
         });
 
         eraWidget.onValues((values) => {
-            const input = document.getElementById('HeartBeat');
-            heartbeatValue = values[config.id].value; // Giả sử values[config.id].value là nhịp tim thực tế
+            const input = document.getElementById('Do Am');
+            doamValue = values[config.id].value; // Giả sử values[config.id].value là nhịp tim thực tế
             input.checked = values[config.id].value > 0; // Đặt trạng thái của checkbox dựa trên nhịp tim
-        });
+        }); */
 
-        eraWidget.ready();
+ //       eraWidget.ready(); --> 
 
             //uu
             const gaugeOptions = {
@@ -246,7 +240,8 @@
             
                 if (chartSpeed) {
                     point = chartSpeed.series[0].points[0];
-                    inc = Math.round((Math.random() - 0.5) * 100);
+                    inc = doamValue;
+                    //inc = Math.round((Math.random() - 0.5) * 100);
                     newVal = point.y + inc;
             
                     if (newVal < 0 || newVal > 200) {
