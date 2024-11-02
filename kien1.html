@@ -1,270 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Live Data Chart</title>
-        <style>
-            .highcharts-figure .chart-container {
-                width: 300px;
-                height: 200px;
-                float: left;
-            }
-            
-            .highcharts-figure,
-            .highcharts-data-table table {
-                width: 600px;
-                margin: 0 auto;
-            }
-            
-            .highcharts-data-table table {
-                font-family: Verdana, sans-serif;
-                border-collapse: collapse;
-                border: 1px solid #ebebeb;
-                margin: 10px auto;
-                text-align: center;
-                width: 100%;
-                max-width: 500px;
-            }
-            
-            .highcharts-data-table caption {
-                padding: 1em 0;
-                font-size: 1.2em;
-                color: #555;
-            }
-            
-            .highcharts-data-table th {
-                font-weight: 600;
-                padding: 0.5em;
-            }
-            
-            .highcharts-data-table td,
-            .highcharts-data-table th,
-            .highcharts-data-table caption {
-                padding: 0.5em;
-            }
-            
-            .highcharts-data-table thead tr,
-            .highcharts-data-table tr:nth-child(even) {
-                background: #f8f8f8;
-            }
-            
-            .highcharts-data-table tr:hover {
-                background: #f1f7ff;
-            }
-            
-            @media (max-width: 600px) {
-                .highcharts-figure,
-                .highcharts-data-table table {
-                    width: 100%;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed and RPM Gauge</title>
+    <style>
+        .highcharts-figure .chart-container {
+            width: 300px;
+            height: 200px;
+            float: left;
+        }
+        .highcharts-figure {
+            width: 600px;
+            margin: 0 auto;
+        }
+        .highcharts-description {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
+    <figure class="highcharts-figure">
+        <div id="container-speed" class="chart-container"></div>
+        <div id="container-rpm" class="chart-container"></div>
+        <p class="highcharts-description">Speed and RPM Dashboard</p>
+    </figure>
+
+    <script>
+        // Common gauge options
+        const gaugeOptions = {
+            chart: {
+                type: 'solidgauge'
+            },
+            title: null,
+            pane: {
+                center: ['50%', '85%'],
+                size: '140%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor: '#f0f0f0',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
                 }
-            
-                .highcharts-figure .chart-container {
-                    width: 300px;
-                    float: none;
-                    margin: 0 auto;
-                }
-            }
-            
-            .highcharts-description {
-                margin: 0.3rem 10px;
-            }
-            
-        </style>
-    </head>
-    <body>
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://code.highcharts.com/highcharts-more.js"></script>
-        <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <script src="https://code.highcharts.com/modules/export-data.js"></script>
-        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-        <script src="https://www.unpkg.com/@eohjsc/era-widget@1.1.3/src/index.js"></script>
-
-        <figure class="highcharts-figure">
-            <div id="container-speed" class="chart-container"></div>
-            <div id="container-rpm" class="chart-container"></div>
-            <p class="highcharts-description">
-                ??????? Triet ??????????
-            </p>
-        </figure>
-        <script>
- //           <!-- // Era Widget initialization
- /*      const eraWidget = new EraWidget();
-        let config = null;
-        let doamValue = 0; // Khởi tạo giá trị nhịp tim mặc định
-        const dataBuffer = [];
-
-        eraWidget.onConfiguration((configuration) => {
-            config = configuration.realtime_configs[0];
-        });
-
-        eraWidget.onValues((values) => {
-            const input = document.getElementById('Do Am');
-            doamValue = values[config.id].value; // Giả sử values[config.id].value là nhịp tim thực tế
-            input.checked = values[config.id].value > 0; // Đặt trạng thái của checkbox dựa trên nhịp tim
-        }); */
-
- //       eraWidget.ready(); --> 
-
-            //uu
-            const gaugeOptions = {
-                chart: {
-                    type: 'solidgauge'
+            },
+            yAxis: {
+                stops: [
+                    [0.1, '#55BF3B'], // green
+                    [0.5, '#DDDF0D'], // yellow
+                    [0.9, '#DF5353']  // red
+                ],
+                lineWidth: 0,
+                tickWidth: 0,
+                minorTickInterval: null,
+                tickAmount: 2,
+                title: {
+                    y: -70
                 },
-            
-                title: null,
-            
-                pane: {
-                    center: ['50%', '85%'],
-                    size: '140%',
-                    startAngle: -90,
-                    endAngle: 90,
-                    background: {
-                        backgroundColor:
-                            Highcharts.defaultOptions.legend.backgroundColor || '#fafafa',
-                        borderRadius: 5,
-                        innerRadius: '60%',
-                        outerRadius: '100%',
-                        shape: 'arc'
+                labels: {
+                    y: 16
+                }
+            },
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
                     }
+                }
+            }
+        };
+
+        // Speed gauge
+        const chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 200,
+                title: {
+                    text: 'Speed'
+                }
+            },
+            series: [{
+                name: 'Speed',
+                data: [80],
+                dataLabels: {
+                    format:
+                        '<div style="text-align:center">' +
+                        '<span style="font-size:25px">{y}</span><br/>' +
+                        '<span style="font-size:12px;opacity:0.4">km/h</span>' +
+                        '</div>'
                 },
-            
-                exporting: {
-                    enabled: false
-                },
-            
                 tooltip: {
-                    enabled: false
+                    valueSuffix: ' km/h'
+                }
+            }]
+        }));
+
+        // RPM gauge
+        const chartRpm = Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 5,
+                title: {
+                    text: 'RPM'
+                }
+            },
+            series: [{
+                name: 'RPM',
+                data: [1],
+                dataLabels: {
+                    format:
+                        '<div style="text-align:center">' +
+                        '<span style="font-size:25px">{y:.1f}</span><br/>' +
+                        '<span style="font-size:12px;opacity:0.4">* 1000 / min</span>' +
+                        '</div>'
                 },
-            
-                // the value axis
-                yAxis: {
-                    stops: [
-                        [0.1, '#55BF3B'], // green
-                        [0.5, '#DDDF0D'], // yellow
-                        [0.9, '#DF5353'] // red
-                    ],
-                    lineWidth: 0,
-                    tickWidth: 0,
-                    minorTickInterval: null,
-                    tickAmount: 2,
-                    title: {
-                        y: -70
-                    },
-                    labels: {
-                        y: 16
-                    }
-                },
-            
-                plotOptions: {
-                    solidgauge: {
-                        borderRadius: 3,
-                        dataLabels: {
-                            y: 5,
-                            borderWidth: 0,
-                            useHTML: true
-                        }
-                    }
+                tooltip: {
+                    valueSuffix: ' revolutions/min'
                 }
-            };
-            
-            // The speed gauge
-            const chartSpeed = Highcharts.chart(
-                'container-speed', Highcharts.merge(gaugeOptions, {
-                    yAxis: {
-                        min: 0,
-                        max: 200,
-                        title: {
-                            text: 'Speed'
-                        }
-                    },
-            
-                    credits: {
-                        enabled: false
-                    },
-            
-                    series: [{
-                        name: 'Speed',
-                        data: [80],
-                        dataLabels: {
-                            format:
-                            '<div style="text-align:center">' +
-                            '<span style="font-size:25px">{y}</span><br/>' +
-                            '<span style="font-size:12px;opacity:0.4">km/h</span>' +
-                            '</div>'
-                        },
-                        tooltip: {
-                            valueSuffix: ' km/h'
-                        }
-                    }]
-            
-                }));
-            
-            // The RPM gauge
-            const chartRpm = Highcharts.chart(
-                'container-rpm', Highcharts.merge(gaugeOptions, {
-                    yAxis: {
-                        min: 0,
-                        max: 5,
-                        title: {
-                            text: 'RPM'
-                        }
-                    },
-            
-                    series: [{
-                        name: 'RPM',
-                        data: [1],
-                        dataLabels: {
-                            format:
-                            '<div style="text-align:center">' +
-                            '<span style="font-size:25px">{y:.1f}</span><br/>' +
-                            '<span style="font-size:12px;opacity:0.4">' +
-                            '* 1000 / min' +
-                            '</span>' +
-                            '</div>'
-                        },
-                        tooltip: {
-                            valueSuffix: ' revolutions/min'
-                        }
-                    }]
-            
-                }));
-            
-            // Bring life to the dials
-            setInterval(function () {
-                // Speed
-                let point,
-                    newVal,
-                    inc;
-            
-                if (chartSpeed) {
-                    point = chartSpeed.series[0].points[0];
-                    inc = doamValue;
-                    //inc = Math.round((Math.random() - 0.5) * 100);
-                    newVal = point.y + inc;
-            
-                    if (newVal < 0 || newVal > 200) {
-                        newVal = point.y - inc;
-                    }
-            
-                    point.update(newVal);
-                }
-            
-                // RPM
-                if (chartRpm) {
-                    point = chartRpm.series[0].points[0];
-                    inc = Math.random() - 0.5;
-                    newVal = point.y + inc;
-            
-                    if (newVal < 0 || newVal > 5) {
-                        newVal = point.y - inc;
-                    }
-            
-                    point.update(newVal);
-                }
-            }, 2000);
-            
-        </script>
-    </body>
+            }]
+        }));
+
+        // Update gauges periodically
+        setInterval(function () {
+            // Update Speed
+            if (chartSpeed) {
+                const point = chartSpeed.series[0].points[0];
+                const newVal = Math.floor(Math.random() * 201); // Random speed value between 0 and 200
+                point.update(newVal);
+            }
+
+            // Update RPM
+            if (chartRpm) {
+                const point = chartRpm.series[0].points[0];
+                const newVal = (Math.random() * 5).toFixed(1); // Random RPM value between 0 and 5
+                point.update(parseFloat(newVal));
+            }
+        }, 2000); // Update every 2 seconds
+    </script>
+</body>
 </html>
